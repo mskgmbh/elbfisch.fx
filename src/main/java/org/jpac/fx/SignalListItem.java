@@ -30,6 +30,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Control;
 import org.jpac.CharString;
 import org.jpac.Decimal;
+import org.jpac.Generic;
 import org.jpac.Logical;
 import org.jpac.Signal;
 import org.jpac.SignalNotRegisteredException;
@@ -76,7 +77,9 @@ public class SignalListItem implements Serializable{
             control = new SignedIntegerOutputField(signal.getQualifiedIdentifier()); 
         } else if (signal instanceof CharString){
             control = new CharStringOutputField(signal.getQualifiedIdentifier());    
-        }        
+        } else if (signal instanceof Generic){
+            control = new GenericOutputField(signal.getQualifiedIdentifier());    
+        }         
         return control;
     }
 

@@ -29,6 +29,7 @@ import java.util.Observable;
 import javafx.application.Platform;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.jpac.Generic;
 import org.jpac.Signal;
 import org.jpac.SignalObserver;
 import org.jpac.Value;
@@ -37,7 +38,7 @@ import org.jpac.Value;
  *
  * @author berndschuster
  */
- public abstract class Connector extends Observable implements Runnable, SignalObserver{
+ public class Connector extends Observable implements Runnable, SignalObserver{
     static    Logger Log = LoggerFactory.getLogger("jpac.fx");     
     protected Value   newValue;
     protected Value   value;
@@ -69,9 +70,17 @@ import org.jpac.Value;
     public void run() {
         valid = newValid;
         if (valid){
-            synchronized(newValue){
-                value.copy(newValue);
-            }
+        	if (value == null) {
+        		try {
+					value = newValue.clone();
+				} catch (CloneNotSupportedException exc) {
+					Log.error("Error: ", exc);
+				}
+        	} else {
+            	synchronized(newValue){
+            		value.copy(newValue);
+            	}
+        	}
         }
         connectedAsTarget = newConnectedAsTarget;
         setChanged();
@@ -81,10 +90,19 @@ import org.jpac.Value;
     @Override
     public void update(Observable o, Object o1) {
         Signal sourceSignal = (Signal)o;
+    
         newValid = sourceSignal.isValid();
         if(newValid){
-            synchronized(newValue){
-                newValue.copy(sourceSignal.getValue());
+        	if (newValue == null) {
+        		try {
+					newValue = sourceSignal.getValue().clone();
+				} catch (CloneNotSupportedException exc) {
+					Log.error("Error: ", exc);
+				}
+        	} else {
+	            synchronized(newValue){
+	                newValue.copy(sourceSignal.getValue());
+	            }
             }
         }
         Platform.runLater(this);
