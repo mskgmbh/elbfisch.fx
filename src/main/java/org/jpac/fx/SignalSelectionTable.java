@@ -72,12 +72,11 @@ public class SignalSelectionTable extends TableView<SignalSelectionData> {
     }        
         
     public void adjustDefaultStateCellSize(){
-        FontMetrics fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(Font.getDefault());
-        
+    	this.setColumnResizePolicy( TableView.CONSTRAINED_RESIZE_POLICY );
+    	identifierColumn.setMaxWidth( 1f * Integer.MAX_VALUE * 70 ); // 50% width
+    	typeColumn.setMaxWidth( 1f * Integer.MAX_VALUE * 30 ); // 30% width        
         identifierColumn.setResizable(true);
-        identifierColumn.setPrefWidth(fontMetrics.computeStringWidth("Main.AnyModule.AnySubModule.Signal"));
         typeColumn.setResizable(true);
-        typeColumn.setPrefWidth(fontMetrics.computeStringWidth("org.jpac.ArbitrarySignalType"));
     }
 
     public double getDefaultWidth(){

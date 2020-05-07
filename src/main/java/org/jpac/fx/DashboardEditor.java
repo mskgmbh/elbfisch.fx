@@ -29,9 +29,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -40,8 +43,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -63,6 +68,8 @@ public class DashboardEditor extends Stage {
     private static final int DEFAULTNUMBEROFTABLEENTRIES    = 15;
     private static final int MAXNUMBEROFVISIBLETABLEENTRIES = 30;
     
+    private static final String STACKTRACEQUALIFIER         = ":StackTrace";
+    
     static final String WILDCARD = "\\x2A";
     enum CharacterClasses {ALPHANUMERIC("\\p{Alnum}*"),
                            DOT("\\x2E"),
@@ -81,6 +88,7 @@ public class DashboardEditor extends Stage {
     private VBox                 contentPanel;
     private Button               btnCreateDashboard;
     private Button               btnSelectDeselect;
+    private CheckBox             cbWithStacktraces;
     private HBox                 creationControlPanel;
     private HBox                 infoTextPanel;
     private Label                label1 ;
@@ -98,7 +106,7 @@ public class DashboardEditor extends Stage {
     private boolean              atLeastOneSignalSelected;
 
     private DashboardLauncher    dashboardLauncher;
-
+    
     /**
      * Creates new form DashboardEditor
      */
@@ -114,15 +122,13 @@ public class DashboardEditor extends Stage {
         btnSelectDeselect.setDisable(true);
         btnCreateDashboard.setDisable(true);
         
-        this.setWidth(tabSelectSignals.getDefaultWidth() + SLIDERWIDTH);
-        adaptDialogHeight(DEFAULTNUMBEROFTABLEENTRIES);
-        
         controlInfoText();  
     }
 
     private void initComponents() {
         tfSearchPattern       = new TextField();
         selectionControlPanel = new HBox();
+        cbWithStacktraces     = new CheckBox();
         btnSelectDeselect     = new Button();
         tabSelectSignals      = new SignalSelectionTable();
         creationControlPanel  = new HBox();
@@ -133,7 +139,7 @@ public class DashboardEditor extends Stage {
         lbInfoText            = new Label();
 
         tfSearchPattern.setEditable(true);
-        tfSearchPattern.setPrefSize(300,20);
+        tfSearchPattern.setPrefSize(250,20);
         tfSearchPattern.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
@@ -141,8 +147,25 @@ public class DashboardEditor extends Stage {
                 }
             }
         );
-        selectionControlPanel.getChildren().add(tfSearchPattern);
+        
+        tfSearchPattern.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+            	controlDashboardName();          
+            }
+        }
+    );
 
+        cbWithStacktraces.setText("with stack traces");
+        cbWithStacktraces.setPrefWidth(130.0);
+        cbWithStacktraces.setSelected(false);
+        cbWithStacktraces.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                cbWithStacktracesActionPerformed(event);
+            }
+        });
+                        
         btnSelectDeselect.setText("select all");
         btnSelectDeselect.setPrefSize(116.0, 29.0);
         btnSelectDeselect.setOnAction(new EventHandler<ActionEvent>() {
@@ -154,8 +177,9 @@ public class DashboardEditor extends Stage {
         );
         
         selectionControlPanel.setPadding(new Insets(5,5,5,5));
-        selectionControlPanel.setSpacing(5.0);        
-        selectionControlPanel.getChildren().add(btnSelectDeselect);
+        selectionControlPanel.setSpacing(5.0);
+        selectionControlPanel.setAlignment(Pos.CENTER_LEFT);
+        selectionControlPanel.getChildren().addAll(tfSearchPattern, cbWithStacktraces, btnSelectDeselect);
 
         btnCreateDashboard.setText("create dashboard");
         btnCreateDashboard.setOnAction(new EventHandler<ActionEvent>() {
@@ -191,7 +215,7 @@ public class DashboardEditor extends Stage {
 
         lbInfoText.setAlignment(Pos.BASELINE_LEFT);
         lbInfoText.setText("This is a long and boring text .......");
-        lbInfoText.setPrefSize(400.0, 35.0);
+        lbInfoText.setPrefSize(creationControlPanel.getMinWidth(), 35.0);
         
         infoTextPanel.setPrefSize(400.0, 25.0);
         infoTextPanel.setPadding(new Insets(5,5,5,5));
@@ -199,12 +223,14 @@ public class DashboardEditor extends Stage {
         infoTextPanel.getChildren().addAll(lbInfoText);
 
         contentPanel = new VBox();
-        contentPanel.setPrefWidth(500.0);
-        contentPanel.setPrefHeight(600.0);
+        contentPanel.setPrefWidth(selectionControlPanel.getPrefWidth());
+
         contentPanel.getChildren().addAll(selectionControlPanel, tabSelectSignals, creationControlPanel, infoTextPanel);
         scene = new Scene(contentPanel,contentPanel.getPrefWidth(), contentPanel.getPrefHeight());
         setScene(scene);
     }
+    
+    
 
     private void tfSearchPatternActionPerformed(Event evt) {
         handleSearchPatternActionPerformed(evt);
@@ -221,6 +247,10 @@ public class DashboardEditor extends Stage {
             btnSelectDeselect.setText("select all");            
             btnSelectDeselectToggledToSelected = true;
         }
+    }
+  
+    private void cbWithStacktracesActionPerformed(Event event) {
+    	handleSearchPatternActionPerformed(event);
     }
 
     private void btnCreateDashboardActionPerformed(Event event) {
@@ -283,7 +313,7 @@ public class DashboardEditor extends Stage {
     
     private void controlInfoText(){
         if (tabSelectSignals.getItems().size() == 0){
-            lbInfoText.setText("select signals, use '*' as wildcard");
+            lbInfoText.setText("select signals, use '*' as wildcard, append dots ('.') to adjust levels");
             lbInfoText.setStyle("-fx-text-fill: black;");            
         } 
         else{
@@ -310,12 +340,38 @@ public class DashboardEditor extends Stage {
         }
     }
     
+    private void controlDashboardName() {
+        String ldbn;    
+    	String dbn = "";
+    	int    i   = 1;
+    	String searchString = tfSearchPattern.getText();
+    	if (!searchString.equals("")){
+    		if (searchString.contentEquals("*")) {
+    			dbn = "all";
+    		} else {
+    			dbn  = searchString.replaceAll(WILDCARD,"");
+    			ldbn = dbn;
+        		while(DashboardData.alreadyExists(ldbn)) {
+    				ldbn = dbn + i++;
+    			}
+    			dbn = ldbn;
+    		}
+    	}
+    	tfDashboardName.setText(dbn);
+    }
+    
+    int level;
     private void handleSearchPatternActionPerformed(Event event){
         String  searchString;
         String  regexString;
         Pattern pattern;
         if (!tfSearchPattern.getText().equals("")){
             searchString = tfSearchPattern.getText();
+            level        = computeLevel(searchString);
+            if (level > 0) {
+            	int stripIndex = searchString.length() > level ? searchString.length() - level : 0;
+            	searchString = searchString.substring(0, stripIndex);//strip level indicators (trailing dots)
+            }
             //prepare regular expression
             //replace dots (.), because they are interpreted as meta characters  
             regexString  = searchString.replaceAll(CharacterClasses.DOT.getValue(),CharacterClasses.BACKSLASH.getValue() + CharacterClasses.DOT.getValue());
@@ -339,12 +395,22 @@ public class DashboardEditor extends Stage {
                         return o1.getQualifiedIdentifier().compareTo(o2.getQualifiedIdentifier());
                     };
             });
-            listOfSignals.forEach(s -> {
-                    if (pattern.matcher(s.getQualifiedIdentifier()).matches() && !s.getQualifiedIdentifier().contains(Signal.PROXYQUALIFIER)){
-                       tabSelectSignals.addEntry(s);
-                    }
-                }
-            );
+            
+            List<Signal> listOfMatchingSignals = listOfSignals.stream().filter(s -> pattern.matcher(s.getQualifiedIdentifier()).matches() && 
+                    	!s.getQualifiedIdentifier().contains(Signal.PROXYQUALIFIER) &&
+                    	!(!cbWithStacktraces.isSelected() && s.getQualifiedIdentifier().contains(STACKTRACEQUALIFIER))).collect(Collectors.toList());            
+            //filter all signals which are deeper in hierarchy than the desired level
+            if (level > 0) {
+            	int minNumberOfDots = Integer.MAX_VALUE;
+            	int dots            = 0;
+            	for(Signal s: listOfMatchingSignals) {
+            		dots = countDots(s.getQualifiedIdentifier());
+            		if (dots < minNumberOfDots) minNumberOfDots = dots;
+            	}
+            	level = minNumberOfDots + level - 1;
+                listOfMatchingSignals = listOfMatchingSignals.stream().filter(s -> countDots(s.getQualifiedIdentifier()) <= level).collect(Collectors.toList());
+            }
+            listOfMatchingSignals.forEach(s -> tabSelectSignals.addEntry(s));
             
             //reset buttons
             btnSelectDeselect.setDisable(tabSelectSignals.getItems().size() == 0);                                
@@ -354,7 +420,25 @@ public class DashboardEditor extends Stage {
             adaptDialogHeight(tabSelectSignals.getItems().size());            
             controlCreateDashboardButton();            
             controlInfoText();
+            this.sizeToScene();
         }
+    }
+    
+    private int computeLevel(String searchString) {
+		int level = 0;
+		if (searchString.length() > 0) {
+			int index = searchString.length() - 1;
+			while(index > 0 && searchString.charAt(index--) == '.') level++;
+		}
+		return level;
+	}
+    
+    private int countDots(String identifier) {
+    	int dots = 0;
+    	for(int i = 0; i < identifier.length(); i++) {
+    		if (identifier.charAt(i) == '.') dots++;
+    	}
+    	return dots;
     }
     
     private boolean isAtLeastOneSignalSelected(){
@@ -365,8 +449,6 @@ public class DashboardEditor extends Stage {
         int itemsCnt = numberOfTableItems > MAXNUMBEROFVISIBLETABLEENTRIES ? MAXNUMBEROFVISIBLETABLEENTRIES : numberOfTableItems;
         itemsCnt     = itemsCnt           < DEFAULTNUMBEROFTABLEENTRIES ? DEFAULTNUMBEROFTABLEENTRIES       : itemsCnt;
         tabSelectSignals.setPrefHeight(itemsCnt * tabSelectSignals.getPreferredCellHeight());
-        this.setHeight(CONTROLPANELHEIGHT + TABLETITLEBARHEIGHT + tabSelectSignals.getPreferredCellHeight() * itemsCnt + 2 * CONTROLPANELHEIGHT);
-        this.setMaxHeight(CONTROLPANELHEIGHT + TABLETITLEBARHEIGHT + tabSelectSignals.getPreferredCellHeight() * itemsCnt + 2 * CONTROLPANELHEIGHT);                
     }
     
     public void selectAllListedSignals(boolean select){

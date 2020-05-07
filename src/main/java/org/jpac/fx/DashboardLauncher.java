@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -496,5 +497,9 @@ public class DashboardLauncher extends Stage {
         catch(IOException exc){
             errorStoringDashboard = true;
         }        
-    }            
+    }
+    
+    public ObservableList<DashboardData> getListOfDashboards(){
+    	return tabSelectDashboards.getItems();
+    }
 }
