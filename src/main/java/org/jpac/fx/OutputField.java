@@ -29,8 +29,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -117,19 +115,29 @@ public abstract class OutputField extends Label implements Observer, Connectable
         this.setAlignment(Pos.CENTER_LEFT);
         setTooltip(toolTip);
         
-        widthProperty().addListener(new ChangeListener(){
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                alignWarningIcon();
-            }  
+        widthProperty().addListener(e -> {
+            alignWarningIcon();
         });
 
-        heightProperty().addListener(new ChangeListener(){
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        heightProperty().addListener(e ->{
                 alignWarningIcon();
             }  
-        });
+        );
+
+        // widthProperty().addListener(new ChangeListener(){
+        //     @Override
+        //     public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        //         alignWarningIcon();
+        //     }  
+        // });
+
+        // heightProperty().addListener(new ChangeListener(){
+        //     @Override
+        //     public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        //         alignWarningIcon();
+        //     }  
+        // });
+
     }
     
     protected void setDisplayText(boolean set){

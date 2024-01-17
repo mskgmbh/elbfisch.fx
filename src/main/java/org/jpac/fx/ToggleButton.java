@@ -36,7 +36,6 @@ import org.jpac.Logical;
 import org.jpac.LogicalValue;
 import org.jpac.Signal;
 import org.jpac.SignalAccessException;
-import org.jpac.SignalAlreadyConnectedException;
 import org.jpac.SignalRegistry;
 import org.jpac.Value;
 import org.jpac.alarm.Alarm;

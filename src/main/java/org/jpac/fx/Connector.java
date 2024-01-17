@@ -29,7 +29,6 @@ import java.util.Observable;
 import javafx.application.Platform;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import org.jpac.Generic;
 import org.jpac.Signal;
 import org.jpac.SignalObserver;
 import org.jpac.Value;

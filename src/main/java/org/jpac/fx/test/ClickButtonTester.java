@@ -31,7 +31,6 @@ import javafx.stage.Stage;
 import org.jpac.Module;
 import org.jpac.fx.ClickButton;
 import org.jpac.fx.ControlPane;
-import org.jpac.fx.ToggleButton;
 
 /**
  *

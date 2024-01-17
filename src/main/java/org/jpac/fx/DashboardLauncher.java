@@ -356,7 +356,6 @@ public class DashboardLauncher extends Stage {
         dashboardEditor.setX(getX() + 100);
         dashboardEditor.setY(getY() + 100);
         dashboardEditor.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                    @SuppressWarnings("unchecked")
 					@Override
                     public void handle(WindowEvent e) {
                         btnCreateNew.setDisable(false);

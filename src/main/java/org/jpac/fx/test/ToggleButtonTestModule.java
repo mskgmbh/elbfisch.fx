@@ -30,7 +30,6 @@ import org.jpac.InputInterlockException;
 import org.jpac.Logical;
 import org.jpac.Module;
 import org.jpac.OutputInterlockException;
-import org.jpac.PeriodOfTime;
 import org.jpac.ProcessException;
 
 /**

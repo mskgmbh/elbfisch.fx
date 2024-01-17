@@ -31,7 +31,6 @@ import org.jpac.InputInterlockException;
 import org.jpac.Module;
 import org.jpac.OutputInterlockException;
 import org.jpac.ProcessException;
-import org.jpac.SignedInteger;
 
 /**
  *

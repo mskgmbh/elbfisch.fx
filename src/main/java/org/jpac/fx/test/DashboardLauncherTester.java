@@ -27,7 +27,6 @@ package org.jpac.fx.test;
 
 import javafx.stage.Stage;
 import org.jpac.Module;
-import org.jpac.fx.DashboardEditor;
 import org.jpac.fx.DashboardLauncher;
 
 /**

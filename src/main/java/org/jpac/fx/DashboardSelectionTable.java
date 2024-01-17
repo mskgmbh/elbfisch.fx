@@ -25,14 +25,13 @@
 
 package org.jpac.fx;
 
-import com.sun.javafx.tk.Toolkit;
-import javafx.event.EventHandler;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+
 import org.jpac.SignalNotRegisteredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +57,7 @@ public class DashboardSelectionTable extends TableView<DashboardData> {
         identifierColumn.setResizable(false);
         identifierColumn.setSortable(false);
         identifierColumn.setCellValueFactory(new PropertyValueFactory<DashboardData,String>("name"));
-        identifierColumn.setId("identifierColumn");
-        
+        identifierColumn.setId("identifierColumn");   
         getColumns().addAll(identifierColumn);    
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);        
     }        
@@ -69,7 +67,10 @@ public class DashboardSelectionTable extends TableView<DashboardData> {
     }
         
     protected double getPreferredCellHeight(){
-        double cellHeight = Toolkit.getToolkit().getFontLoader().getFontMetrics(Font.getDefault()).getLineHeight() + 8;
+        Text text = new Text();
+        text.setFont(Font.getDefault());
+        double cellHeight = text.getLayoutBounds().getHeight();            
+        //double cellHeight = Toolkit.getToolkit().getFontLoader().getFontMetrics(Font.getDefault()).getLineHeight() + 8;
         return cellHeight;
     }
             

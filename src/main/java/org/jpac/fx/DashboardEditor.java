@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -59,6 +58,7 @@ import org.jpac.SignalRegistry;
  *
  * @author berndschuster
  */
+@SuppressWarnings("unused")
 public class DashboardEditor extends Stage {
     static  Logger Log = LoggerFactory.getLogger("jpac.fx"); 
 

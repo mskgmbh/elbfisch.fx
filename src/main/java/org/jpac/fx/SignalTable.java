@@ -25,8 +25,6 @@
 
 package org.jpac.fx;
 
-import com.sun.javafx.tk.FontMetrics;
-import com.sun.javafx.tk.Toolkit;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -188,13 +186,17 @@ public class SignalTable extends TableView<SignalListItem> implements Connectabl
     }        
         
     public void adjustDefaultStateCellSize(){
-        FontMetrics fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(Font.getDefault());
-        
-        double width  = fontMetrics.computeStringWidth("XXXXXXXXXXXX");
+        Text text = new Text();
+        text.setText("XXXXXXXXXXXX");
+        text.setFont(Font.getDefault());
+        double width = text.getLayoutBounds().getWidth() + 10;
+        //FontMetrics fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(Font.getDefault()); 
+        //double width  = fontMetrics.computeStringWidth("XXXXXXXXXXXX");
         identifierColumn.setResizable(true);
         stateColumn.setPrefWidth(width);
         editColumn.setPrefWidth(width);
-        identifierColumn.setPrefWidth(fontMetrics.computeStringWidth("Main.AnyModule.AnySubModule.Signal"));
+        text.setText("Main.AnyModule.AnySubModule.Signal");
+        identifierColumn.setPrefWidth(text.getLayoutBounds().getWidth());
     }
 
     public double getDefaultWidth(){
@@ -219,7 +221,10 @@ public class SignalTable extends TableView<SignalListItem> implements Connectabl
     }
     
     protected double getPreferredCellHeight(){
-        double cellHeight = Toolkit.getToolkit().getFontLoader().getFontMetrics(Font.getDefault()).getLineHeight() + 10;
+        Text text = new Text();
+        text.setFont(Font.getDefault());
+        double cellHeight = text.getLayoutBounds().getHeight() + 10;
+        //double cellHeight = Toolkit.getToolkit().getFontLoader().getFontMetrics(Font.getDefault()).getLineHeight() + 10;
         return cellHeight;
     }
     

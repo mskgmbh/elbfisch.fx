@@ -52,7 +52,6 @@ public class ControlPane extends Pane implements Connectable, Confirmable, Obser
     
     private   String          identifier;
     private   boolean         connected;
-    private   boolean         enabled;
     private   Confirmed       confirmedEvent;
     private   Aborted         abortedEvent;
     protected boolean         toBeConfirmed;

@@ -32,7 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import javafx.geometry.Point2D;
 import javafx.geometry.Dimension2D;
@@ -43,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author berndschuster
  */
-public class DashboardData extends ArrayList<SignalListItem> implements Serializable, Cloneable, Comparable{
+public class DashboardData extends ArrayList<SignalListItem> implements Comparable<DashboardData>{
     static  Logger Log = LoggerFactory.getLogger("jpac.fx"); 
     
     public   static String FILEDIRECTORY         = "./cfg/dashboards/";
@@ -371,7 +370,7 @@ public class DashboardData extends ArrayList<SignalListItem> implements Serializ
     }
 
     @Override
-    public int compareTo(Object o) {
-        return name.compareTo(((DashboardData)o).getName());
+    public int compareTo(DashboardData dbd) {
+        return name.compareTo(dbd.getName());
     }
 }

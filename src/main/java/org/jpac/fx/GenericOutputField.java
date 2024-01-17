@@ -25,10 +25,6 @@
 
 package org.jpac.fx;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import org.jpac.DecimalValue;
-
 /**
  *
  * @author berndschuster

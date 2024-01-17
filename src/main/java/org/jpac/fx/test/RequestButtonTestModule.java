@@ -28,7 +28,6 @@ package org.jpac.fx.test;
 import org.jpac.AbstractModule;
 import org.jpac.Handshake;
 import org.jpac.InputInterlockException;
-import org.jpac.Logical;
 import org.jpac.Module;
 import org.jpac.OutputInterlockException;
 import org.jpac.PeriodOfTime;

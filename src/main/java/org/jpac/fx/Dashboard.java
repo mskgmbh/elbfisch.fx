@@ -24,7 +24,6 @@
  */
 package org.jpac.fx;
 
-import com.sun.javafx.tk.Toolkit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +32,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.geometry.Bounds;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -49,6 +49,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -62,6 +63,7 @@ import org.jpac.SignalNotRegisteredException;
  *
  * @author berndschuster
  */
+@SuppressWarnings("unused")
 public class Dashboard extends Stage {
     static  Logger Log = LoggerFactory.getLogger("jpac.fx"); 
     private static final int  SLIDERWIDTH         = 20;
@@ -212,9 +214,13 @@ public class Dashboard extends Stage {
         lbHideHierarchyLevel.setText("  hide hierarchy level of identifier");
         lbHideHierarchyLevel.setAlignment(Pos.CENTER);
         
-        spnHierarchyLevel = new Spinner();
+        spnHierarchyLevel = new Spinner<Integer>();
         spnHierarchyLevel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 9));
-        spnHierarchyLevel.setPrefWidth(Toolkit.getToolkit().getFontLoader().getFontMetrics(Font.getDefault()).computeStringWidth("XXXX") + 20);
+        Text text = new Text();
+        text.setText("XXXX");
+        text.setFont(Font.getDefault());
+        //spnHierarchyLevel.setPrefWidth(Toolkit.getToolkit().getFontLoader().getFontMetrics(Font.getDefault()).computeStringWidth("XXXX") + 20);
+        spnHierarchyLevel.setPrefWidth(text.getLayoutBounds().getWidth() + 20);
         spnHierarchyLevel.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                                 @Override
                                                 public void handle(MouseEvent event) {
