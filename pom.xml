@@ -4,7 +4,7 @@
 
 	<groupId>elbfisch</groupId>
 	<artifactId>elbfisch.fx</artifactId>
-	<version>4.1.0</version>
+	<version>4.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>elbfisch.fx</name>
@@ -34,7 +34,7 @@
 	<dependency>
 		<groupId>elbfisch</groupId>
 		<artifactId>elbfisch.core</artifactId>
-		<version>4.1.0</version>
+		<version>4.1.0-SNAPSHOT</version>
 	</dependency>
 		<dependency>
 			<groupId>javafx-swt</groupId>
