@@ -56,5 +56,5 @@ public interface Connectable {
     public void setIdentifier(String identifier);
     public void connect();
     public void disconnect();
-    public boolean isConnected();
+    public boolean connected();
 }

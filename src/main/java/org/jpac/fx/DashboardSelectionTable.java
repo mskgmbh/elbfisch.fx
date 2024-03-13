@@ -32,6 +32,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.util.List;
+
 import org.jpac.SignalNotRegisteredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,14 +53,14 @@ public class DashboardSelectionTable extends TableView<DashboardData> {
     public DashboardSelectionTable(){
         super();
         //this.setSelectionModel(new SelectionModel(this));
-        this.identifierColumn = new TableColumn<>("dashboard");
+        identifierColumn = new TableColumn<>("dashboard");
         
         identifierColumn.setPrefWidth(400);
         identifierColumn.setResizable(false);
         identifierColumn.setSortable(false);
         identifierColumn.setCellValueFactory(new PropertyValueFactory<DashboardData,String>("name"));
         identifierColumn.setId("identifierColumn");   
-        getColumns().addAll(identifierColumn);    
+        getColumns().addAll(List.of(identifierColumn));    
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);        
     }        
         

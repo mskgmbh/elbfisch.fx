@@ -24,8 +24,6 @@
  */
 package org.jpac.fx;
 
-import java.util.Observable;
-import java.util.Observer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
@@ -38,6 +36,7 @@ import org.jpac.Signal;
 import org.jpac.SignalAccessException;
 import org.jpac.SignalRegistry;
 import org.jpac.Value;
+import org.jpac.Observer;
 import org.jpac.alarm.Alarm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @author berndschuster
  */
 
-public class ToggleButton extends javafx.scene.control.ToggleButton implements Connectable, Confirmable, Runnable, Observer{
+public class ToggleButton extends javafx.scene.control.ToggleButton implements Connectable, Confirmable, Runnable, Observer<Connector>{
     static  Logger Log = LoggerFactory.getLogger("jpac.fx");
     
     private   Confirmed    confirmedEvent;
@@ -217,7 +216,7 @@ public class ToggleButton extends javafx.scene.control.ToggleButton implements C
     
    
     @Override
-    public void update(Observable o, Object o1) {
+    public void update(Connector o) {
         valueValid     = connector.isValueValid();
         boolean valueGotValid   = valueValid  && !valueWasValid;
         boolean valueGotInvalid = !valueValid && valueWasValid;
@@ -236,7 +235,7 @@ public class ToggleButton extends javafx.scene.control.ToggleButton implements C
     }
     
     protected void updateForeGroundColor(){
-        if (isConnected()){
+        if (connected()){
             if (isConfirmable()){
                 if (value != null && (value.is(true) == isSelected())){
                     setStyle("-fx-text-fill: black;");
@@ -281,7 +280,7 @@ public class ToggleButton extends javafx.scene.control.ToggleButton implements C
 
     @Override
     public void disconnect() {
-        if (isConnected()){
+        if (connected()){
             assignedSignal.disconnect(connector);            
             connected = false;
             if (blankOutIfDisconnected){
@@ -293,7 +292,7 @@ public class ToggleButton extends javafx.scene.control.ToggleButton implements C
     }
 
     @Override
-    public boolean isConnected() {
+    public boolean connected() {
         return connected;
     }
     

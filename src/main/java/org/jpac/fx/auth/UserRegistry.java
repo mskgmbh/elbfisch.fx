@@ -30,8 +30,9 @@ package org.jpac.fx.auth;
 import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Observable;
-import java.util.Observer;
+import org.jpac.Observable;
+import org.jpac.Observer;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -174,7 +175,7 @@ public class UserRegistry extends Observable{
     }
     
     @Override
-    public void addObserver(Observer observer){
+    public void addObserver(Observer<?> observer){
         super.addObserver(observer);
         setChanged();
         notifyObservers(getCurrentPrivilege());

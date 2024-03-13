@@ -25,7 +25,7 @@
 
 package org.jpac.fx;
 
-import java.util.Observable;
+import org.jpac.Observable;
 import javafx.application.Platform;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -87,7 +87,7 @@ import org.jpac.Value;
     }
 
     @Override
-    public void update(Observable o, Object o1) {
+    public void update(Signal o) {
         Signal sourceSignal = (Signal)o;
     
         newValid = sourceSignal.isValid();

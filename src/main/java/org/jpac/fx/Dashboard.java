@@ -333,7 +333,7 @@ public class Dashboard extends Stage {
         if (dashboardLauncher != null){
             Event.fireEvent(dashboardLauncher, new DashboardClosedEvent(dashboardData));
         }
-        if (signalTable.isConnected()){
+        if (signalTable.connected()){
             signalTable.disconnect();
         }                
     }
@@ -369,7 +369,7 @@ public class Dashboard extends Stage {
                 dashboardData.setIdentifierColumnWidth((int)signalTable.identifierColumn.getWidth());
                 dashboardData.setStateColumnWidth((int)signalTable.stateColumn.getWidth());
                 dashboardData.setEditColumnWidth((int)signalTable.editColumn.getWidth());
-                dashboardData.setConnected(signalTable.isConnected());
+                dashboardData.setConnected(signalTable.connected());
                 dashboardData.setHiddenHierarchyLevel((Integer)spnHierarchyLevel.getValue());
                 dashboardData.setShowConnectButton(btnConnect.isVisible());
                 dashboardData.setShowSaveDashboardButton(btnSaveDashboard.isVisible());

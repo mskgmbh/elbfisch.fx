@@ -26,8 +26,8 @@
 package org.jpac.fx;
 
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Observable;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javafx.scene.image.ImageView;
 import org.jpac.LogicalValue;
 
@@ -103,10 +103,10 @@ public class LogicalOutputField extends OutputField{
         return this.ledColor;
     }
     
-    @Override
-    public void update(Observable o, Object o1) {
-        super.update(o, o1);
-    }
+    // @Override
+    // public void update(Signal o) {
+    //     super.update(o);
+    // }
     
     protected void loadLedImageIcons() {
         String onPath  = ICONDIR + ledColor.value       + ON  + ledType.value + ICONFILEEXTENSION;
@@ -118,10 +118,10 @@ public class LogicalOutputField extends OutputField{
     protected ImageView loadImageIcon(String path){
         ImageView imageView = null;
         try{
-            imageView = new ImageView(HmiUtitilities.getImageIcon(new URL(path)));
+            imageView = new ImageView(HmiUtitilities.getImageIcon(new URI(path).toURL()));
             imageView = scaleImageIcon(imageView);
         }
-        catch(MalformedURLException exc){
+        catch(URISyntaxException | MalformedURLException exc){
             Log.error("Error: ", exc);
         }
         return imageView;

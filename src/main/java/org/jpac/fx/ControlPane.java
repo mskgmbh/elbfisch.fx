@@ -25,10 +25,7 @@
 
 package org.jpac.fx;
 
-import java.util.Observable;
-import java.util.Observer;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import org.slf4j.LoggerFactory;
@@ -39,12 +36,13 @@ import org.jpac.Module;
 import org.jpac.ProcessException;
 import org.jpac.fx.auth.Privilege;
 import org.jpac.fx.auth.UserRegistry;
+import org.jpac.fx.auth.UserRegistryObserver;
 
 /**
  *
  * @author berndschuster
  */
-public class ControlPane extends Pane implements Connectable, Confirmable, Observer{
+public class ControlPane extends Pane implements Connectable, Confirmable, UserRegistryObserver{
     static public Logger Log = LoggerFactory.getLogger("jpac.fx");  
 
     public enum MessageSeverity  {INFO,ALERT};
@@ -60,8 +58,6 @@ public class ControlPane extends Pane implements Connectable, Confirmable, Obser
     protected Result          result;
     private   Privilege       privilege;
     
-    
-    private   ChangeListener  messageListener;
     private   String          message;
     private   MessageSeverity messageSeverity;
     
@@ -152,7 +148,7 @@ public class ControlPane extends Pane implements Connectable, Confirmable, Obser
     }
     
     @Override
-    public boolean isConnected(){
+    public boolean connected(){
         return this.connected;
     }
     
@@ -208,7 +204,7 @@ public class ControlPane extends Pane implements Connectable, Confirmable, Obser
         if (Log.isInfoEnabled()) Log.info("control panel " + getClass().getSimpleName() + " aborted by user");
         aborted = true;
         if (!(Thread.currentThread() instanceof JPac)){
-            JPac.getInstance().invokeLater(new AbortionRunner(this));
+            JPac.getInstance().invokeLater(new AbortionRunner());
         }
         else{
             doAbortion();
@@ -345,12 +341,12 @@ public class ControlPane extends Pane implements Connectable, Confirmable, Obser
      * 
      * @param listener a listener for changes of the message property 
      */
-    public void setMessageListener(ChangeListener listener){
-        throw new UnsupportedOperationException();
-//        messageListener = listener;
-//        //send the recent message to the listener right away
-//        listener.changed(this, null, null);
-    }
+//     public void setMessageListener(ChangeListener listener){
+//         throw new UnsupportedOperationException();
+// //        messageListener = listener;
+// //        //send the recent message to the listener right away
+// //        listener.changed(this, null, null);
+//     }
     
     /**
      * 
@@ -433,11 +429,13 @@ public class ControlPane extends Pane implements Connectable, Confirmable, Obser
     }
    
     @Override
-    public void update(Observable o, Object o1) {
-        if (o instanceof UserRegistry){
-            Privilege p = (Privilege) o1;
-            enableByPrivilege(p != null && p.isGreaterEqual(this.privilege));
-        }
+    public void update(UserRegistry o) {
+        //do nothing
+    }
+
+    @Override
+    public void update(UserRegistry userRegistry, Privilege privilege) {
+        enableByPrivilege(privilege != null && privilege.isGreaterEqual(this.privilege));
     }
         
     /**
@@ -540,12 +538,6 @@ public class ControlPane extends Pane implements Connectable, Confirmable, Obser
     }
 
     class AbortionRunner implements Runnable{
-        private ControlPane panel;
-        private boolean      abort;
-        
-        public AbortionRunner(ControlPane panel){
-            this.panel = panel;
-        }
         
         @Override
         public void run() {

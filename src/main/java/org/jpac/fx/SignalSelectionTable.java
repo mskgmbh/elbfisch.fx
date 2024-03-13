@@ -32,6 +32,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.util.List;
+
 import org.jpac.Signal;
 import org.jpac.SignalNotRegisteredException;
 import org.slf4j.Logger;
@@ -66,13 +68,13 @@ public class SignalSelectionTable extends TableView<SignalSelectionData> {
         typeColumn.setCellValueFactory(new PropertyValueFactory<SignalSelectionData,String>("type"));
         typeColumn.setId("typeColumn");
         
-        getColumns().addAll(identifierColumn, typeColumn);    
+        getColumns().addAll(List.of(identifierColumn, typeColumn));    
         adjustDefaultStateCellSize();
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);        
     }        
         
     public void adjustDefaultStateCellSize(){
-    	this.setColumnResizePolicy( TableView.CONSTRAINED_RESIZE_POLICY );
+    	this.setColumnResizePolicy( TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
     	identifierColumn.setMaxWidth( 1f * Integer.MAX_VALUE * 70 ); // 50% width
     	typeColumn.setMaxWidth( 1f * Integer.MAX_VALUE * 30 ); // 30% width        
         identifierColumn.setResizable(true);

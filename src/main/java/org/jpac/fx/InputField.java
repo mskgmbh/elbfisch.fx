@@ -25,8 +25,7 @@
 
 package org.jpac.fx;
 
-import java.util.Observable;
-import java.util.Observer;
+import org.jpac.Observer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
@@ -46,7 +45,7 @@ import org.jpac.Value;
  *
  * @author berndschuster
  */
-abstract public class InputField extends TextField implements Connectable, Confirmable, Runnable, Observer{
+abstract public class InputField extends TextField implements Connectable, Confirmable, Runnable, Observer<Connector>{
     static  Logger Log = LoggerFactory.getLogger("jpac.fx");    
     
     private   Confirmed     confirmedEvent;
@@ -152,7 +151,7 @@ abstract public class InputField extends TextField implements Connectable, Confi
     }
    
     protected void updateStyle(){
-        if (isConnected()){
+        if (connected()){
             if (isConfirmable()){
                 if (isSynchronized() && getIdleStyle() != null){
                     setStyle(getIdleStyle());                
@@ -221,7 +220,7 @@ abstract public class InputField extends TextField implements Connectable, Confi
 
     @Override
     public void disconnect() {
-        if (isConnected()){
+        if (connected()){
             connected = false;
             JPac.getInstance().invokeLater(this);  
             connector.deleteObserver(this);        
@@ -235,7 +234,7 @@ abstract public class InputField extends TextField implements Connectable, Confi
     }
     
     @Override
-    public void update(Observable o, Object o1) {
+    public void update(Connector o) {
         signalsValueValid = connector.isValueValid();
         boolean signalsValueGotValid   = signalsValueValid  && !signalsValueWasValid;
         boolean signalsValueGotInvalid = !signalsValueValid && signalsValueWasValid;
@@ -289,7 +288,7 @@ abstract public class InputField extends TextField implements Connectable, Confi
     }
         
     @Override
-    public boolean isConnected() {
+    public boolean connected() {
        return connected;
     }
     
@@ -332,7 +331,7 @@ abstract public class InputField extends TextField implements Connectable, Confi
     @Override
     public void run() {
         try{
-            if (connected){
+            if (connected()){
                 if (toBeInvalidated){
                     toBeInvalidated = false;
                     assignedSignal.invalidate();

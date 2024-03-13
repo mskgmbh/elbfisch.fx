@@ -50,6 +50,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+
+import java.util.List;
+
 import org.jpac.SignalNotRegisteredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +119,7 @@ public class SignalTable extends TableView<SignalListItem> implements Connectabl
             }
         });
 
-        getColumns().addAll(identifierColumn, stateColumn, editColumn);    
+        getColumns().addAll(List.of(identifierColumn, stateColumn, editColumn));
 
         setRowFactory((TableView<SignalListItem> tv) -> {
             TableRow<SignalListItem> row = new TableRow<>();
@@ -231,7 +234,7 @@ public class SignalTable extends TableView<SignalListItem> implements Connectabl
     protected void connectContainedConnnectables(boolean connect){
         for (Node row: lookupAll(".table-row-cell")){
             for (Node cell: row.lookupAll(".table-cell")){
-                Node node = ((TableCell) cell).getGraphic();
+                Node node = ((TableCell<?,?>) cell).getGraphic();
                 if (node instanceof Connectable){
                     if (connect){
                         ((Connectable)node).connect();
@@ -301,7 +304,7 @@ public class SignalTable extends TableView<SignalListItem> implements Connectabl
     }
     
     @Override
-    public boolean isConnected(){
+    public boolean connected(){
         return this.connected;
     }
 
@@ -367,7 +370,7 @@ public class SignalTable extends TableView<SignalListItem> implements Connectabl
                 control.setMinHeight(5);
                 control.setPrefHeight(getPreferredCellHeight());
                 control.prefWidthProperty().bind(this.widthProperty());
-                if (connectInstantly && !((Connectable)control).isConnected()){
+                if (connectInstantly && !((Connectable)control).connected()){
                     ((Connectable)control).connect();
                 }
                 setGraphic(control);                    
@@ -398,7 +401,7 @@ public class SignalTable extends TableView<SignalListItem> implements Connectabl
                 control.setMinHeight(5);
                 control.setPrefHeight(getPreferredCellHeight());
                 control.prefWidthProperty().bind(this.widthProperty());
-                if (connectInstantly && !((Connectable)control).isConnected()){
+                if (connectInstantly && !((Connectable)control).connected()){
                     ((Connectable)control).connect();
                 }
                 setGraphic(control);                    

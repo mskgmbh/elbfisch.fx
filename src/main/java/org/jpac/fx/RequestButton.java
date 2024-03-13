@@ -24,8 +24,7 @@
  */
 package org.jpac.fx;
 
-import java.util.Observable;
-import java.util.Observer;
+import org.jpac.Observer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -49,7 +48,7 @@ import org.jpac.WrongUseException;
  * @author berndschuster
  */
 
-public class RequestButton extends Button implements Connectable, Confirmable, Observer{
+public class RequestButton extends Button implements Connectable, Confirmable, Observer<Connector>{
     static  Logger Log = LoggerFactory.getLogger("jpac.fx");
     
     public enum EnableRule{
@@ -203,8 +202,8 @@ public class RequestButton extends Button implements Connectable, Confirmable, O
     }
 
     @Override
-    public void update(Observable o, Object o1) {
-        handleUpdateFor(((Connector) o));
+    public void update(Connector o) {
+        handleUpdateFor(o);
         boolean valuesValid      = requestConnector.isValueValid() && activeConnector.isValueValid() && 
                                    acknowledgeConnector.isValueValid() && resultConnector.isValueValid() &&
                                    (assignedEnableSignal != null ? enableConnector.isValueValid() : true);
@@ -264,7 +263,7 @@ public class RequestButton extends Button implements Connectable, Confirmable, O
     }
         
     protected void updateStyle(){
-        if (isConnected()){
+        if (connected()){
             if (requested && activeValue != null && activeValue.is(false) && acknowledgeValue != null && acknowledgeValue.is(false) && getRequestedStyle() != null){
                 setStyle(getRequestedStyle());
             } else if (requested && activeValue != null && activeValue.is(true) && acknowledgeValue != null && acknowledgeValue.is(false) && getActiveStyle() != null){
@@ -349,7 +348,7 @@ public class RequestButton extends Button implements Connectable, Confirmable, O
 
     @Override
     public void disconnect() {
-        if (isConnected()){
+        if (connected()){
             assignedRequestSignal.disconnect(requestConnector); 
             assignedActiveSignal.disconnect(activeConnector);
             assignedAcknowledgeSignal.disconnect(acknowledgeConnector);
@@ -365,7 +364,7 @@ public class RequestButton extends Button implements Connectable, Confirmable, O
     }
 
     @Override
-    public boolean isConnected() {
+    public boolean connected() {
         return connected;
     }
     

@@ -24,8 +24,7 @@
  */
 package org.jpac.fx;
 
-import java.util.Observable;
-import java.util.Observer;
+import org.jpac.Observer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -46,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author berndschuster
  */
 
-public class ClickButton extends Button implements Connectable, Confirmable, Runnable, Observer{
+public class ClickButton extends Button implements Connectable, Confirmable, Runnable, Observer<Connector>{
     static  Logger Log = LoggerFactory.getLogger("jpac.fx");
     
     private   Confirmed    confirmedEvent;
@@ -163,7 +162,7 @@ public class ClickButton extends Button implements Connectable, Confirmable, Run
     
    
     @Override
-    public void update(Observable o, Object o1) {
+    public void update(Connector o) {
         valueValid     = connector.isValueValid();
         boolean valueGotValid   = valueValid  && !valueWasValid;
         boolean valueGotInvalid = !valueValid && valueWasValid;
@@ -181,7 +180,7 @@ public class ClickButton extends Button implements Connectable, Confirmable, Run
         updateForeGroundColor();
         if (Log.isDebugEnabled()) Log.debug(this + ".update()");        
     }
-    
+
     protected void updateForeGroundColor(){
         //nothing to do
     }    
@@ -220,7 +219,7 @@ public class ClickButton extends Button implements Connectable, Confirmable, Run
 
     @Override
     public void disconnect() {
-        if (isConnected()){
+        if (connected()){
             assignedSignal.disconnect(connector);            
             connected = false;
             if (blankOutIfDisconnected){
@@ -233,7 +232,7 @@ public class ClickButton extends Button implements Connectable, Confirmable, Run
     }
 
     @Override
-    public boolean isConnected() {
+    public boolean connected() {
         return connected;
     }
     

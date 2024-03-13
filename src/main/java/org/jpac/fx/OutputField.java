@@ -26,9 +26,9 @@
 package org.jpac.fx;
 
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Observable;
-import java.util.Observer;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.jpac.Observer;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -44,7 +44,7 @@ import org.jpac.SignalRegistry;
  *
  * @author berndschuster
  */
-public abstract class OutputField extends Label implements Observer, Connectable{
+public abstract class OutputField extends Label implements Observer<Connector>, Connectable{
     static  Logger Log = LoggerFactory.getLogger("jpac.fx");
 
     protected static final String WARNINGICONPATH = "file:/org/jpac/fx/resources/warning.png";
@@ -155,7 +155,7 @@ public abstract class OutputField extends Label implements Observer, Connectable
     }
     
     @Override
-    public void update(Observable o, Object o1) {
+    public void update(Connector o) {
         valid = connector.isValueValid();
         value = valid ? connector.getValue() : 0;
         String text = formatText();
@@ -232,9 +232,9 @@ public abstract class OutputField extends Label implements Observer, Connectable
     
     protected void loadImageIcons(){
         try{
-            warningIcon = HmiUtitilities.getImageIcon(new URL(WARNINGICONPATH));
+            warningIcon = HmiUtitilities.getImageIcon(new URI(WARNINGICONPATH).toURL());
         }
-        catch(MalformedURLException exc){
+        catch(URISyntaxException | MalformedURLException exc){
             Log.error("Error: ", exc);
         };
     }    
@@ -290,7 +290,7 @@ public abstract class OutputField extends Label implements Observer, Connectable
     }
         
     @Override
-    public boolean isConnected() {
+    public boolean connected() {
         return this.connected;
     }
     
