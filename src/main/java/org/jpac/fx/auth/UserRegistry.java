@@ -29,7 +29,8 @@ package org.jpac.fx.auth;
 
 import java.io.File;
 import java.net.URL;
-import java.net.URLDecoder;
+
+import org.jpac.ApplicationContext;
 import org.jpac.Observable;
 import org.jpac.Observer;
 
@@ -58,14 +59,14 @@ public class UserRegistry extends Observable{
     protected UserRegistry(){
         boolean usersLoaded = false;
         try{
-            usersFileUrl = ClassLoader.getSystemResource("org.jpac.Users.xml");
-            if (usersFileUrl != null){
-                usersFile = new File(URLDecoder.decode(usersFileUrl.getFile(), "UTF-8"));
+            String applicationsHomeDir = ApplicationContext.getHomeDir();
+            File   usersFile           = new File(applicationsHomeDir + "/cfg/org.jpac.Users.xml");
+            if (usersFile.exists()){
                 usersLoaded = load();
             }
             else{
                 //no users file found in class path. Set default
-                usersFile = new File("./cfg/org.jpac.Users.xml");
+                usersFile = new File(applicationsHomeDir + "/cfg/org.jpac.Users.xml");
             }   
         }
         catch(Exception exc){
