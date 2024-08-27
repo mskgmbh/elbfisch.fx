@@ -60,7 +60,7 @@ public class UserRegistry extends Observable{
         boolean usersLoaded = false;
         try{
             String applicationsHomeDir = ApplicationContext.getHomeDir();
-            File   usersFile           = new File(applicationsHomeDir + "/cfg/org.jpac.Users.xml");
+            usersFile                  = new File(applicationsHomeDir + "/cfg/org.jpac.Users.xml");
             if (usersFile.exists()){
                 usersLoaded = load();
             }
